@@ -17,8 +17,8 @@ func TestGeneratePassword(t *testing.T) {
 
 		for i, test := range testData {
 			_, err := GeneratePassword(test.charset, test.length)
-			if (err !=nil) == !test.expectedError {
-				t.Errorf("GeneratePassword(): test iteration: %v; expected: %v; received: %v;",
+			if (err !=nil) != test.expectedError {
+				t.Fatalf("GeneratePassword(): test iteration: %v; expected: %v; received: %v;",
 					i,
 					test.expectedError, 
 					err !=nil, 
@@ -37,13 +37,13 @@ func TestGeneratePassword(t *testing.T) {
 		for i, test := range testData {
 			password, err := GeneratePassword(test.charset, test.length)
 			if (err !=nil) {
-				t.Errorf("GeneratePassword(): test iteration: %v; error: %v",
+				t.Fatalf("GeneratePassword(): test iteration: %v; error: %v",
 					i,
 					err,
 				)
 			}
 			if (len(password) != test.length) {
-				t.Errorf("GeneratePassword(): test iteration: %v; expected length: %v; resulted length: %v",
+				t.Fatalf("GeneratePassword(): test iteration: %v; expected length: %v; resulted length: %v",
 					i,
 					test.length,
 					len(password),
@@ -61,7 +61,7 @@ func TestGeneratePassword(t *testing.T) {
 		for i, test := range testData {
 			password, err := GeneratePassword(test.charset, test.length)
 			if (err !=nil) {
-				t.Errorf("GeneratePassword(): test iteration: %v; error: %v",
+				t.Fatalf("GeneratePassword(): test iteration: %v; error: %v",
 					i,
 					err,
 				)
@@ -69,7 +69,7 @@ func TestGeneratePassword(t *testing.T) {
 			usedValues := make(map[byte]bool)
 			for j:=0; j<test.length; j++ {
 				if _, ok := usedValues[password[j]]; ok {
-					t.Errorf("GeneratePassword(): test iteration: %v; password: %v; repeated %s rune on index %v",
+					t.Fatalf("GeneratePassword(): test iteration: %v; password: %v; repeated %s rune on index %v",
 						i,
 						password,
 						string(password[j]),
