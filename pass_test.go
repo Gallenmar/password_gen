@@ -4,15 +4,15 @@ import "testing"
 
 func TestGeneratePassword(t *testing.T) {
 	type testCase struct {
-		charset string
+		charset []byte
 		length int
 		expectedError bool
 	}
 
 	t.Run("error when length too long", func(t *testing.T) {
 		testData := []testCase{
-			{charset: "abcdefghijklmnopqrstuvwxyz", length: 8},
-			{charset: "abcdef", length: 8, expectedError: true},
+			{charset: []byte("abcdefghijklmnopqrstuvwxyz"), length: 8},
+			{charset: []byte("abcdef"), length: 8, expectedError: true},
 		}
 
 		for i, test := range testData {
@@ -29,9 +29,9 @@ func TestGeneratePassword(t *testing.T) {
 
 	t.Run("correct password length", func(t *testing.T) {
 		testData := []testCase{
-			{charset: "abcdefghijklmnopqrstuvwxyz", length: 8},
-			{charset: "abcdefghijklmnopqrstuvwxyz", length: 1},
-			{charset: "abcdefghijklmnopqrstuvwxyz", length: 0},
+			{charset: []byte("abcdefghijklmnopqrstuvwxyz"), length: 8},
+			{charset: []byte("abcdefghijklmnopqrstuvwxyz"), length: 1},
+			{charset: []byte("abcdefghijklmnopqrstuvwxyz"), length: 0},
 		}
 
 		for i, test := range testData {
@@ -54,8 +54,8 @@ func TestGeneratePassword(t *testing.T) {
 
 	t.Run("all symbols are unique", func(t *testing.T) {
 		testData := []testCase{
-			{charset: "abcdefghijklmnopqrstuvwxyz", length: 26},
-			{charset: "abcdefghijklmnopqrstuvwxyz", length: 0},
+			{charset: []byte("abcdefghijklmnopqrstuvwxyz"), length: 26},
+			{charset: []byte("abcdefghijklmnopqrstuvwxyz"), length: 0},
 		}
 
 		for i, test := range testData {
