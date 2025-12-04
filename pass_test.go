@@ -25,7 +25,6 @@ func TestGeneratePassword(t *testing.T) {
 				)
 			}
 		}
-		
 	})
 
 	t.Run("correct password length", func(t *testing.T) {
@@ -51,6 +50,36 @@ func TestGeneratePassword(t *testing.T) {
 				)
 			}
 		}
-		
+	})
+
+	t.Run("all symbols are unique", func(t *testing.T) {
+		testData := []testCase{
+			{charset: "abcdefghijklmnopqrstuvwxyz", length: 26},
+			{charset: "abcdefghijklmnopqrstuvwxyz", length: 0},
+		}
+
+		for i, test := range testData {
+			password, err := GeneratePassword(test.charset, test.length)
+			if (err !=nil) {
+				t.Errorf("GeneratePassword(): test iteration: %v; error: %v",
+					i,
+					err,
+				)
+			}
+			usedValues := make(map[byte]bool)
+			for j:=0; j<test.length; j++ {
+				if _, ok := usedValues[password[j]]; ok {
+					t.Errorf("GeneratePassword(): test iteration: %v; password: %v; repeated %s rune on index %v",
+						i,
+						password,
+						string(password[j]),
+						j,
+					)
+					break
+				} else {
+					usedValues[password[j]] = true
+				}
+			}
+		}
 	})
 }
