@@ -18,7 +18,7 @@ type CharsetOption struct {
 }
 
 func GenRndRune(charset []rune) (rune, int, error) {
-	// returns a random rune and index
+	// returns a random rune and index of that rune in the charset
 	bigIdx, err := rand.Int(rand.Reader, big.NewInt(int64(len(charset))))
 	if err != nil {
 		return 0, 0, fmt.Errorf("from rand.Int dependency: %v", err)
@@ -36,7 +36,7 @@ func GetRuneAndSet(charset []rune) ([]rune, rune, error) {
 }
 
 func AddCharsetMinusOne(result []rune, charset []rune, addCharset []rune) ([]rune, []rune, error) {
-	// adds random rune to results and appends the rest to charset
+	// appends random rune to results and appends the rest to charset
 	newCharset, n, err := GetRuneAndSet(addCharset)
 	if err != nil {
 		return []rune{}, []rune{}, err
@@ -69,6 +69,7 @@ func GenPwd(options Options) (string, error) {
 		}
 	}
 
+	// sanity check
 	if charsetCounter > options.length {
 		return "", fmt.Errorf("length is too small to satisfy one character from each set rule (min: %v)", charsetCounter)
 	}
@@ -86,6 +87,7 @@ func GenPwd(options Options) (string, error) {
 		result = append(result, char)
 	}
 
+	// shuffle first examples of each set with the rest of the password
 	mathRand.Shuffle(len(result), func(i, j int) { result[i], result[j] = result[j], result[i] })
 
 	return string(result), nil
