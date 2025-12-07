@@ -11,7 +11,7 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-const TIMEOUT = 30 // in seconds
+const TIMEOUT_DEFAULT = 30 // in seconds
 const PASS_HISTORY_FILE_PATH = "pass.log"
 
 type Options struct {
@@ -19,6 +19,7 @@ type Options struct {
 	includeNumbers bool
   includeLower bool
 	includeUpper bool
+	timeout uint
 }
 
 func HashPassword(password string) (string, error) {
@@ -58,15 +59,15 @@ func TryUniquePassword(options Options, hashes []string) (string, string, error)
 				break
 			}
 		}
-
-		elapsed := time.Since(start)
-		if elapsed > time.Second * TIMEOUT {
-			return "", "", fmt.Errorf("timeout")
-		}
 		if !found {
 			break
 		} else {
-			fmt.Println("Password was detected to have already been generated. Generating another unique password...")
+			elapsed := time.Since(start)
+			if elapsed > time.Second * time.Duration(options.timeout) {
+				return "", "", fmt.Errorf("timeout")
+			} else {
+				fmt.Println("Password was detected to have already been generated. Generating another unique password...")
+			}
 		}
 	}
 	return password, passHash, nil
@@ -94,13 +95,27 @@ func ShutFile(f *os.File) {
 	}
 }
 
+func CleanHistory() error {
+	err := os.Remove(PASS_HISTORY_FILE_PATH)
+	if err != nil {
+		return fmt.Errorf("deleting file: %v", err)
+	}
+	return nil
+}
+
 func InitOptions() (Options) {
 	lengthPtr := flag.Uint("length", 0, "Length of the output (required)")
 	includeNumbersPtr := flag.Bool("numbers", false, "Include numbers (0-9)")
 	includeLowerPtr := flag.Bool("lower", false, "Include lowercase letters (a-z)")
 	includeUpperPtr := flag.Bool("upper", false, "Include uppercase letters (A-Z)")
+	timeoutPtr := flag.Uint("timeout", 0, "Time in seconds before timeout")
+	cleanupPtr := flag.Bool("cleanup", false, "Ignores all other flags and cleans the history of passwords")
 	flag.Parse()
 
+	if *cleanupPtr {
+		CleanHistory()
+		os.Exit(1)
+	}
 	if *lengthPtr == 0 {
 		fmt.Println("Error with input: --length is a required argument.")
 		flag.Usage()
@@ -118,6 +133,12 @@ func InitOptions() (Options) {
 		includeNumbers: *includeNumbersPtr,
 		includeLower: *includeLowerPtr,
 		includeUpper: *includeUpperPtr,
+	}
+
+	if *timeoutPtr != 0 {
+		options.timeout = *timeoutPtr
+	} else {
+		options.timeout = TIMEOUT_DEFAULT
 	}
 
 	return options
