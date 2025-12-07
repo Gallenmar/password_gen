@@ -31,7 +31,6 @@ func main() {
 		flag.Usage()
 		os.Exit(1)
 	}
-	// check if len is less then required sets
 
 	options := Options{
 		length: *lengthPtr,
