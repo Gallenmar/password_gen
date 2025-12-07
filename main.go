@@ -66,7 +66,7 @@ func TryUniquePassword(options Options, hashes []string) (string, string, error)
 		if !found {
 			break
 		} else {
-			fmt.Println("Password was detected to have been already generated. Generating another unique password...")
+			fmt.Println("Password was detected to have already been generated. Generating another unique password...")
 		}
 	}
 	return password, passHash, nil
