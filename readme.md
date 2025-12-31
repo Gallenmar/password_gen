@@ -30,20 +30,34 @@ This project has two feature branches. `gen-by-rune` and `shuffle`, which explor
 `shuffle` - Experiment branch that shuffles the whole character set and selects a slice of the whole string. Although the code is easier to read in this case, shuffling the whole character string while only selecting a part of the work done, turns out not to be such a great idea:)
 
 # Instructions
-## Start
+## Quick Start
 1. Build the image
-```
-$ docker compose up
+```bash
+$ make build
 ```
 
 2. Run the program with all the necessary flags:
-```
-$ docker compose run app go run ./cmd/password_gen/main.go --length 10 --numbers --upper
+```bash
+$ make run FLAGS="--length 10 --numbers --lower"
+OR
+$ make example
 ```
 
 3. Run tests
+```bash
+$ make test
 ```
-$ docker compose run --rm app go test -v ./...
+
+### Other commands from the make file
+``` bash
+Usage: 
+help:    Show help
+build:   Build the container
+run:     Run the password generator (usage: make run FLAGS="--length 30 --numbers")
+example: Run with example flags
+cleanup: Delete history
+test:    Run tests
+clean:   Clean up resources
 ```
 
 ## Flags:
@@ -54,31 +68,26 @@ $ docker compose run --rm app go test -v ./...
 - **--lower**
     Include lowercase letters (a-z).
 - **--upper**
-    Include uppercase Latin letters (A-Z) in the password.
+    Include uppercase Latin letters (A-Z).
 - **--timeout** <integer>
     Time in seconds before timeout when retrying generation (default 30s). Must be positive.
 - **--cleanup**
     Ignores all other flags and cleans the history of passwords.
 
-## Example:
-```
-# 30 characters consisting of numbers and upper case letters
-$ docker compose run go run . --length 30 --numbers --upper
+## Examples
 
-# 30 characters consisting of numbers and lower case letters
-$ docker compose run go run . --length 30 --numbers --lower
+```bash
+# 30 chars, numbers + uppercase
+make run FLAGS="--length 30 --numbers --upper"
 
 # 1 random number
-$ docker compose run go run . --length 1 --numbers
+make run FLAGS="--length 1 --numbers"
 
-# maximum length of the password
-$ docker compose run go run . --length 62 --numbers --upper --lower
+# Max length (62 chars)
+make run FLAGS="--length 62 --numbers --upper --lower"
 
-# delete the history
-$ docker compose run go run . --cleanup
-
-# increase the time to find the password
-$ docker compose run go run . --length 20 --upper --timeout 60
+# Clean history
+make cleanup
 ```
 
 # Todo:

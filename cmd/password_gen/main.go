@@ -23,7 +23,8 @@ func InitOptions() (pass.Options) {
 
 	if *cleanupPtr {
 		history.CleanHistory()
-		os.Exit(1)
+		fmt.Println("History cleaned.")
+		os.Exit(0)
 	}
 	if *lengthPtr == 0 {
 		fmt.Println("Error with input: --length is a required argument.")
