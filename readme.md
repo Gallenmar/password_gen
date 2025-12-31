@@ -1,6 +1,6 @@
 # Password generator
 
-## Criteria
+## About
 This is a password generator that creates passwords based on this criteria:
 1. Passwords must not contain repeating characters.
 2. Each password created must be unique (not repeated across multiple re-runs).
@@ -12,9 +12,15 @@ Additionally according to 3. criteria if user selects all possible sets, the min
 ## Project structure
 This project is of such a size that no folders are needed imho.Therefore all files are in the root of the project.
 
-- `main.go` - The star of the show and start of the program. This mile contains an entry function along with: Input validation, file handling, error handling.
-- `pass.go` - This file contains the algorithm. Main function being `GenPwd()`.
-- `pass_test.go` - Contains tests for `GenPwd()`.
+- cmd/password_gen/main.go - The star of the program. Handles CLI flags, validates input, and calls internal packages.
+
+- internal/pass/pass.go - Core password generation algorithm (GenPwd). Implements character set selection, uniqueness constraints, and shuffling.
+
+- internal/pass/pass_test.go - Unit tests for the password generation logic.
+
+- internal/history/file.go - Manages the password history file: reading existing hashes and saving new ones.
+
+- internal/history/genUnique.go - Contains TryUniquePassword, which generates passwords and checks them against history to ensure uniqueness with timeout handling.
 
 ## Project development
 This project has two feature branches. `gen-by-rune` and `shuffle`, which explored two different ways to randomize the password. After benchmarking the time, the `gen-by-rune` was selected into `main`.
@@ -32,7 +38,7 @@ $ docker compose up
 
 2. Run the program with all the necessary flags:
 ```
-$ docker compose run go run . --length 30 --numbers --upper
+$ docker compose run app go run ./cmd/password_gen/main.go --length 10 --numbers --upper
 ```
 
 3. Run tests

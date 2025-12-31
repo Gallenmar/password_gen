@@ -1,5 +1,13 @@
 services:
   app:
-    build: .
+    build:
+      context: ..
+      dockerfile: build/package/Dockerfile.dev
     volumes:
-      - .:/app
+      - ..:/app
+      - ../data:/data
+      - go-mod-cache:/go/pkg/mod
+    working_dir: /app
+
+volumes:
+  go-mod-cache:

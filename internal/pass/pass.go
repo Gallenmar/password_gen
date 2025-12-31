@@ -19,13 +19,13 @@ type Options struct {
 	Timeout uint
 }
 
-type CharsetOption struct {
+type charsetOption struct {
 	Name string
 	Chars []rune
 	Include bool
 }
 
-func GenRndRune(charset []rune) (rune, int, error) {
+func genRndRune(charset []rune) (rune, int, error) {
 	// returns a random rune and index of that rune in the charset
 	bigIdx, err := rand.Int(rand.Reader, big.NewInt(int64(len(charset))))
 	if err != nil {
@@ -36,16 +36,16 @@ func GenRndRune(charset []rune) (rune, int, error) {
 	return result, idx, nil
 }
 
-func GetRuneAndSet(charset []rune) ([]rune, rune, error) {
+func getRuneAndSet(charset []rune) ([]rune, rune, error) {
 	// returns random rune and slice without that rune
-	result, idx, err:= GenRndRune(charset)
+	result, idx, err:= genRndRune(charset)
 	newCharset := append(charset[:idx], charset[idx + 1:]...)
 	return newCharset, result, err
 }
 
-func AddCharsetMinusOne(result []rune, charset []rune, addCharset []rune) ([]rune, []rune, error) {
+func addCharsetMinusOne(result []rune, charset []rune, addCharset []rune) ([]rune, []rune, error) {
 	// appends random rune to results and appends the rest to charset
-	newCharset, n, err := GetRuneAndSet(addCharset)
+	newCharset, n, err := getRuneAndSet(addCharset)
 	if err != nil {
 		return []rune{}, []rune{}, err
 	}
@@ -62,14 +62,14 @@ func GenPwd(options Options) (string, error) {
 	var err error
 
 	// build full charset based on options and save one char from each set to result
-	CharsetOptions := []CharsetOption{
+	charsetOptions := []charsetOption{
 		{Name: "numbers", Chars: []rune(NUMBERS), Include: options.IncludeNumbers},
 		{Name: "lower", Chars: []rune(LOWER_CASE), Include: options.IncludeLower},
 		{Name: "upper", Chars: []rune(UPPER_CASE), Include: options.IncludeUpper},
 	}
-	for _, opt := range CharsetOptions {
+	for _, opt := range charsetOptions {
 		if opt.Include {
-			result, charset, err = AddCharsetMinusOne(result, charset, opt.Chars)
+			result, charset, err = addCharsetMinusOne(result, charset, opt.Chars)
 			if err != nil {
 				return "", fmt.Errorf("while adding %v: %v", opt.Name, err)
 			}
@@ -88,7 +88,7 @@ func GenPwd(options Options) (string, error) {
 	// build the rest of the password, rune by rune depleting available charset
 	var char rune
 	for range options.Length - charsetCounter {
-		charset, char, err = GetRuneAndSet(charset)
+		charset, char, err = getRuneAndSet(charset)
 		if err != nil {
 			return "", fmt.Errorf("while generating rest: %v", err)
 		}
