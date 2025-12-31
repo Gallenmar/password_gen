@@ -20,19 +20,19 @@ func TestGenPwd(t *testing.T) {
 	t.Run("error when length too long", func(t *testing.T) {
 		testData := []testCase{
 			{
-				options: Options{length: 1, includeNumbers: true, includeLower: true, includeUpper: true}, 
+				options: Options{Length: 1, IncludeNumbers: true, IncludeLower: true, IncludeUpper: true}, 
 				expectingError: true,
 			},
 			{
-				options: Options{length: 1, includeNumbers: false, includeLower: false, includeUpper: true}, 
+				options: Options{Length: 1, IncludeNumbers: false, IncludeLower: false, IncludeUpper: true}, 
 				expectingError: false,
 			},
 			{
-				options: Options{length: 62, includeNumbers: true, includeLower: true, includeUpper: true}, 
+				options: Options{Length: 62, IncludeNumbers: true, IncludeLower: true, IncludeUpper: true}, 
 				expectingError: false,
 			},
 			{
-				options: Options{length: 62, includeNumbers: false, includeLower: true, includeUpper: true}, 
+				options: Options{Length: 62, IncludeNumbers: false, IncludeLower: true, IncludeUpper: true}, 
 				expectingError: true,
 			},
 		}
@@ -52,16 +52,16 @@ func TestGenPwd(t *testing.T) {
 	t.Run("correct password length", func(t *testing.T) {
 		testData := []testCase{
 			{
-				options: Options{length: 2, includeNumbers: false, includeLower: false, includeUpper: true},
+				options: Options{Length: 2, IncludeNumbers: false, IncludeLower: false, IncludeUpper: true},
 			},
 			{
-				options: Options{length: 3, includeNumbers: true, includeLower: true, includeUpper: true},
+				options: Options{Length: 3, IncludeNumbers: true, IncludeLower: true, IncludeUpper: true},
 			},
 			{
-				options: Options{length: 20, includeNumbers: false, includeLower: true, includeUpper: true},
+				options: Options{Length: 20, IncludeNumbers: false, IncludeLower: true, IncludeUpper: true},
 			},
 			{
-				options: Options{length: 62, includeNumbers: true, includeLower: true, includeUpper: true},
+				options: Options{Length: 62, IncludeNumbers: true, IncludeLower: true, IncludeUpper: true},
 			},
 		}
 
@@ -74,7 +74,7 @@ func TestGenPwd(t *testing.T) {
 				)
 			}
 			if (len(password) != int(test.options.Length)) {
-				t.Fatalf("GenPwd(): test iteration: %v; expected length: %v; resulted length: %v",
+				t.Fatalf("GenPwd(): test iteration: %v; expected Length: %v; resulted Length: %v",
 					i,
 					test.options.Length,
 					len(password),
@@ -86,16 +86,16 @@ func TestGenPwd(t *testing.T) {
 	t.Run("all symbols are unique", func(t *testing.T) {
 		testData := []testCase{
 			{
-				options: Options{length: 2, includeNumbers: false, includeLower: false, includeUpper: true},
+				options: Options{Length: 2, IncludeNumbers: false, IncludeLower: false, IncludeUpper: true},
 			},
 			{
-				options: Options{length: 3, includeNumbers: true, includeLower: true, includeUpper: true},
+				options: Options{Length: 3, IncludeNumbers: true, IncludeLower: true, IncludeUpper: true},
 			},
 			{
-				options: Options{length: 20, includeNumbers: false, includeLower: true, includeUpper: true},
+				options: Options{Length: 20, IncludeNumbers: false, IncludeLower: true, IncludeUpper: true},
 			},
 			{
-				options: Options{length: 62, includeNumbers: true, includeLower: true, includeUpper: true},
+				options: Options{Length: 62, IncludeNumbers: true, IncludeLower: true, IncludeUpper: true},
 			},
 		}
 
@@ -127,16 +127,16 @@ func TestGenPwd(t *testing.T) {
 	t.Run("at least one char from each selected set", func(t *testing.T) {
 		testData := []testCase{
 			{
-				options: Options{length: 2, includeNumbers: false, includeLower: false, includeUpper: true},
+				options: Options{Length: 2, IncludeNumbers: false, IncludeLower: false, IncludeUpper: true},
 			},
 			{
-				options: Options{length: 3, includeNumbers: true, includeLower: true, includeUpper: true},
+				options: Options{Length: 3, IncludeNumbers: true, IncludeLower: true, IncludeUpper: true},
 			},
 			{
-				options: Options{length: 20, includeNumbers: false, includeLower: true, includeUpper: true},
+				options: Options{Length: 20, IncludeNumbers: false, IncludeLower: true, IncludeUpper: true},
 			},
 			{
-				options: Options{length: 62, includeNumbers: true, includeLower: true, includeUpper: true},
+				options: Options{Length: 62, IncludeNumbers: true, IncludeLower: true, IncludeUpper: true},
 			},
 		}
 

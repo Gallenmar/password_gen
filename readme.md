@@ -43,7 +43,7 @@ $ docker compose run app go run ./cmd/password_gen/main.go --length 10 --numbers
 
 3. Run tests
 ```
-$ docker compose run go test
+$ docker compose run --rm app go test -v ./...
 ```
 
 ## Flags:
