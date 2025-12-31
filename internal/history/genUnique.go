@@ -13,20 +13,18 @@ func GenUnique(options pass.Options) (string, error) {
 		// extracts hashes of previous passwords from a file
 	f, hashes, err := ExtractHashes()
 	if err != nil {
-		ShutFile(f)
 		return "", fmt.Errorf("error while reading hashes: %v", err)
 	}
+	defer ShutFile(f)
 
 	// keeps trying to generate a unique password
 	password, passHash, err := TryUniquePassword(options, hashes)
 	if err != nil {
-		ShutFile(f)
 		return "", fmt.Errorf("Error: %v", err)
 	}
 
 	// saves hash to a file to keep passwords secure and unique
 	_, err = f.WriteString(passHash + "\n")
-	ShutFile(f)
 	if err != nil {
 		return "", fmt.Errorf("Error: %v", err)
 	}
