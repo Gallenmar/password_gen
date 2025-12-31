@@ -2,6 +2,7 @@ package history
 
 import (
 	"fmt"
+	"log"
 	"time"
 	"strings"
 
@@ -64,8 +65,7 @@ func TryUniquePassword(options pass.Options, hashes []string) (password string, 
 			if elapsed > time.Second * time.Duration(options.Timeout) {
 				return "", "", fmt.Errorf("timeout")
 			} else {
-				// todo: change to log
-				fmt.Println("Password was detected to have already been generated. Generating another unique password...")
+				log.Printf("Password was detected to have already been generated. Generating another unique password...")
 			}
 		}
 	}
