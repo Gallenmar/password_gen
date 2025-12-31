@@ -1,4 +1,4 @@
-package main
+package pass
 
 import (
 	"crypto/rand"
@@ -10,6 +10,14 @@ import (
 const NUMBERS = "0123456789"
 const LOWER_CASE = "abcdefghijklmnopqrstuvwxyz"
 const UPPER_CASE = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+
+type Options struct {
+	Length uint
+	IncludeNumbers bool
+  IncludeLower bool
+	IncludeUpper bool
+	Timeout uint
+}
 
 type CharsetOption struct {
 	Name string
@@ -55,9 +63,9 @@ func GenPwd(options Options) (string, error) {
 
 	// build full charset based on options and save one char from each set to result
 	CharsetOptions := []CharsetOption{
-		{Name: "numbers", Chars: []rune(NUMBERS), Include: options.includeNumbers},
-		{Name: "lower", Chars: []rune(LOWER_CASE), Include: options.includeLower},
-		{Name: "upper", Chars: []rune(UPPER_CASE), Include: options.includeUpper},
+		{Name: "numbers", Chars: []rune(NUMBERS), Include: options.IncludeNumbers},
+		{Name: "lower", Chars: []rune(LOWER_CASE), Include: options.IncludeLower},
+		{Name: "upper", Chars: []rune(UPPER_CASE), Include: options.IncludeUpper},
 	}
 	for _, opt := range CharsetOptions {
 		if opt.Include {
@@ -70,16 +78,16 @@ func GenPwd(options Options) (string, error) {
 	}
 
 	// sanity check
-	if charsetCounter > options.length {
+	if charsetCounter > options.Length {
 		return "", fmt.Errorf("length is too small to satisfy one character from each set rule (min: %v)", charsetCounter)
 	}
-	if int(options.length - charsetCounter) > len(charset) {
+	if int(options.Length - charsetCounter) > len(charset) {
 		return "", fmt.Errorf("length is too big to satisfy unique characters rule (max: %v)", len(charset)+int(charsetCounter))
 	}
 
 	// build the rest of the password, rune by rune depleting available charset
 	var char rune
-	for range options.length - charsetCounter {
+	for range options.Length - charsetCounter {
 		charset, char, err = GetRuneAndSet(charset)
 		if err != nil {
 			return "", fmt.Errorf("while generating rest: %v", err)

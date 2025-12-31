@@ -8,19 +8,13 @@ import (
 	"log"
 	"time"
 	"strings"
+
 	"golang.org/x/crypto/bcrypt"
+	"password_gen/internal/pass"
 )
 
 const TIMEOUT_DEFAULT = 30 // in seconds
 const PASS_HISTORY_FILE_PATH = "pass.log"
-
-type Options struct {
-	length uint
-	includeNumbers bool
-  includeLower bool
-	includeUpper bool
-	timeout uint
-}
 
 func HashPassword(password string) (string, error) {
 	bytes, err := bcrypt.GenerateFromPassword([]byte(password), 14)
@@ -32,13 +26,14 @@ func CheckPasswordHash(password, hash string) bool {
 	return err == nil
 }
 
-func TryUniquePassword(options Options, hashes []string) (string, string, error) {
+// add names to return types
+func TryUniquePassword(options pass.Options, hashes []string) (string, string, error) {
 	var password string
 	var passHash string
 	var err error
 	start := time.Now()
 	for {
-		password, err = GenPwd(options)
+		password, err = pass.GenPwd(options)
 		if err != nil {
 			return "", "", fmt.Errorf("password generation: %v", err)
 		}
@@ -63,7 +58,7 @@ func TryUniquePassword(options Options, hashes []string) (string, string, error)
 			break
 		} else {
 			elapsed := time.Since(start)
-			if elapsed > time.Second * time.Duration(options.timeout) {
+			if elapsed > time.Second * time.Duration(options.Timeout) {
 				return "", "", fmt.Errorf("timeout")
 			} else {
 				fmt.Println("Password was detected to have already been generated. Generating another unique password...")
@@ -103,7 +98,7 @@ func CleanHistory() error {
 	return nil
 }
 
-func InitOptions() (Options) {
+func InitOptions() (pass.Options) {
 	lengthPtr := flag.Uint("length", 0, "Length of the output (required)")
 	includeNumbersPtr := flag.Bool("numbers", false, "Include numbers (0-9)")
 	includeLowerPtr := flag.Bool("lower", false, "Include lowercase letters (a-z)")
@@ -128,17 +123,17 @@ func InitOptions() (Options) {
 		os.Exit(1)
 	}
 
-	options := Options{
-		length: *lengthPtr,
-		includeNumbers: *includeNumbersPtr,
-		includeLower: *includeLowerPtr,
-		includeUpper: *includeUpperPtr,
+	options := pass.Options{
+		Length: *lengthPtr,
+		IncludeNumbers: *includeNumbersPtr,
+		IncludeLower: *includeLowerPtr,
+		IncludeUpper: *includeUpperPtr,
 	}
 
 	if *timeoutPtr != 0 {
-		options.timeout = *timeoutPtr
+		options.Timeout = *timeoutPtr
 	} else {
-		options.timeout = TIMEOUT_DEFAULT
+		options.Timeout = TIMEOUT_DEFAULT
 	}
 
 	return options

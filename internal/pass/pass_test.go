@@ -1,4 +1,4 @@
-package main
+package pass
 
 import (
 	"strings"
@@ -73,10 +73,10 @@ func TestGenPwd(t *testing.T) {
 					err,
 				)
 			}
-			if (len(password) != int(test.options.length)) {
+			if (len(password) != int(test.options.Length)) {
 				t.Fatalf("GenPwd(): test iteration: %v; expected length: %v; resulted length: %v",
 					i,
-					test.options.length,
+					test.options.Length,
 					len(password),
 				)
 			}
@@ -108,7 +108,7 @@ func TestGenPwd(t *testing.T) {
 				)
 			}
 			usedValues := make(map[byte]bool)
-			for j:=0; j<int(test.options.length); j++ {
+			for j:=0; j<int(test.options.Length); j++ {
 				if _, ok := usedValues[password[j]]; ok {
 					t.Fatalf("GenPwd(): test iteration: %v; password: %v; repeated %s rune on index %v",
 						i,
@@ -149,11 +149,11 @@ func TestGenPwd(t *testing.T) {
 				)
 			}
 			usedCharset := map[string]CharsetCheck{
-				"numbers": {Name: "includeNumbers", expectedSet: test.options.includeNumbers },
-				"lower": {Name: "includeLower", expectedSet: test.options.includeLower },
-				"upper": {Name: "includeUpper", expectedSet: test.options.includeUpper },
+				"numbers": {Name: "includeNumbers", expectedSet: test.options.IncludeNumbers },
+				"lower": {Name: "includeLower", expectedSet: test.options.IncludeLower },
+				"upper": {Name: "includeUpper", expectedSet: test.options.IncludeUpper },
 			}
-			for j:=0; j<int(test.options.length); j++ {
+			for j:=0; j<int(test.options.Length); j++ {
 				if !usedCharset["numbers"].hasSet && strings.ContainsRune(NUMBERS, rune(password[j])) {
 					tmp := usedCharset["numbers"]
 					tmp.hasSet = true
